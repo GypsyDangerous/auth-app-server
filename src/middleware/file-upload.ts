@@ -1,6 +1,7 @@
 import multer from "multer";
 // import { v1 as uuidv1 } from "uuid";
 import uid from "uid";
+import fs from "fs"
 
 const MimeTypeMap: any = {
 	"image/png": "png",
@@ -14,7 +15,11 @@ const fileUpload = multer({
 	// limits: 500000,
 	storage: multer.diskStorage({
 		destination: (req, file, callback) => {
-			callback(null, "uploads/images");
+			const dir = "./uploads/images";
+			if (!fs.existsSync(dir)) {
+				fs.mkdirSync(dir, { recursive: true });
+			}
+			callback(null, dir);
 		},
 		filename: (req, file, callback) => {
 			const ext = MimeTypeMap[file.mimetype];
