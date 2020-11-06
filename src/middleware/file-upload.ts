@@ -1,13 +1,13 @@
 import multer from "multer";
 // import { v1 as uuidv1 } from "uuid";
-import { uid } from 'uid/secure';
+import uid from "uid";
 
 const MimeTypeMap: any = {
 	"image/png": "png",
 	"image/jpeg": "jpeg",
 	"image/jpg": "jpg",
 	"image/svg+xml": "svg",
-	"image/gif": "gif"
+	"image/gif": "gif",
 };
 
 const fileUpload = multer({
