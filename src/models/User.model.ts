@@ -1,5 +1,14 @@
-import { string } from "joi";
 import mongoose, { Schema } from "mongoose";
+
+interface User extends mongoose.Document{
+	bio: string,
+	phone: string,
+	username: string,
+	email: string,
+	password: string,
+	isDeleted?: boolean,
+	photo: string
+}
 
 const UserSchema = new Schema(
 	{
@@ -28,12 +37,16 @@ const UserSchema = new Schema(
 			type: Boolean,
 			defualt: false,
 		},
+		photo: {
+			type: String,
+			required: true,
+		},
 	},
 	{
 		timestamps: true,
 	}
 );
 
-const User = mongoose.model("poll", UserSchema);
+const User = mongoose.model<User>("poll", UserSchema);
 
 export = User;
