@@ -3,7 +3,9 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path"
+import path from "path";
+import mongoose from "mongoose";
+import rateLimit from "express-rate-limit";
 dotenv.config();
 
 // const middlewares = require("./middlewares");
@@ -18,12 +20,25 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+const uri = process.env.ATLAS_URI || "";
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+const connection = mongoose.connection;
+connection.once("open", () => {
+	console.log("MongoDB database connection successful");
+});
+
+app.use(
+	rateLimit({
+		windowMs: 15 * 60 * 1000, // 15 minutes
+		max: 15,
+	})
+);
+
 app.get("/", (req, res) => {
 	res.json({
 		message: "🦄🌈✨👋🌎🌍🌏✨🌈🦄",
 	});
 });
-app.use("/uploads/images", express.static(path.join("uploads", "images")));
 
 app.use("/api/v1", api);
 
