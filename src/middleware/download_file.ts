@@ -2,6 +2,8 @@ import { NextFunction, Response, Request } from "express";
 import fs from "fs";
 import request from "request";
 import { upload_path } from "../utils/constants";
+import { get_image_filename } from "../utils/functions";
+import { AuthRequest } from "../types/Request";
 
 export const download = (uri: string, filename: string, callback: () => void): void => {
 	request.head(uri, function (err, res, body) {
@@ -17,12 +19,20 @@ export const download = (uri: string, filename: string, callback: () => void): v
 	});
 };
 
-interface UrlBody extends Buffer{
-	url: string
+interface UrlBody extends Buffer {
+	url: string;
 }
 
-const middleware = async (req: Request<Record<string, unknown>, unknown, UrlBody>, res: Response, next: NextFunction) => {
-	const {url} = req.body
-	const filename = 
-	// const  
+export const middleware = async (
+	req: AuthRequest<Record<string, unknown>, unknown, UrlBody>,
+	res: Response,
+	next: NextFunction
+): Promise<void> => {
+	const { url } = req.body;
+	const ext = url.split(".").slice(1).join(".");
+	const filename = get_image_filename(ext);
+	download(url, filename, () => {
+		req.filename = filename;
+		next()
+	});
 };
