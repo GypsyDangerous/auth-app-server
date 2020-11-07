@@ -24,11 +24,9 @@ interface UrlBody extends Buffer{
 
 export const fileDownload = async (req: Request<Record<string, unknown>, unknown, UrlBody>, res: Response, next: NextFunction) : Promise<void> => {
 	const {url} = req.body
-	const ext = url.split(".").slice(-1)[0].replace(/[^a-z.]/, "")
+	const ext = url.split(".").slice(-1)[0].split("?")[0].replace(/[^a-z.]/ig, "")
 	const filename = get_image_filename(ext)
 	download(url, filename, () => {
 		res.json({code: 200, message: "file downloaded succesfully", filename})
-		// next()
 	})
-	// const  
 };
