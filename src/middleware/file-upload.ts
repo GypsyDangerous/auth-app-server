@@ -1,7 +1,7 @@
 import multer from "multer";
-// import { v1 as uuidv1 } from "uuid";
-import uid from "uid";
+import {get_image_filename} from "../utils/functions"
 import fs from "fs"
+import { upload_path } from "../utils/constants";
 
 const MimeTypeMap: any = {
 	"image/png": "png",
@@ -15,7 +15,7 @@ const fileUpload = multer({
 	// limits: 500000,
 	storage: multer.diskStorage({
 		destination: (req, file, callback) => {
-			const dir = "./uploads/images";
+			const dir = upload_path;
 			if (!fs.existsSync(dir)) {
 				fs.mkdirSync(dir, { recursive: true });
 			}
@@ -23,7 +23,7 @@ const fileUpload = multer({
 		},
 		filename: (req, file, callback) => {
 			const ext = MimeTypeMap[file.mimetype];
-			callback(null, `photo-${uid(12)}-${uid(12)}.${ext}`);
+			callback(null, get_image_filename(ext));
 		},
 	}),
 	fileFilter: (req, file, callback) => {
