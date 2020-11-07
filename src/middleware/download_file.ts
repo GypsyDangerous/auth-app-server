@@ -2,6 +2,7 @@ import { NextFunction, Response, Request } from "express";
 import fs from "fs";
 import request from "request";
 import { upload_path } from "../utils/constants";
+import { get_image_filename } from "../utils/functions";
 
 export const download = (uri: string, filename: string, callback: () => void): void => {
 	request.head(uri, function (err, res, body) {
@@ -21,8 +22,13 @@ interface UrlBody extends Buffer{
 	url: string
 }
 
-const middleware = async (req: Request<Record<string, unknown>, unknown, UrlBody>, res: Response, next: NextFunction) => {
+export const fileDownload = async (req: Request<Record<string, unknown>, unknown, UrlBody>, res: Response, next: NextFunction) : Promise<void> => {
 	const {url} = req.body
-	const filename = 
+	const ext = url.split(".").slice(1).join(".")
+	const filename = get_image_filename(ext)
+	download(url, filename, () => {
+		res.json({code: 200, message: "file downloaded succesfully", filename})
+		next()
+	})
 	// const  
 };
