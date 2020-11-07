@@ -1,0 +1,1 @@
+export const upload_path = "./uploads/images"
