@@ -6,7 +6,6 @@ const router = Router();
 // import uuidv1 from "uuid/v1"
 import fileUpload from "../middleware/file-upload";
 import { AuthRequest } from "../types/Request";
-import {fileDownload} from "../middleware/download_file"
 const saltRounds = 13;
 
 const hasUniqueEmail = async (req: AuthRequest | Request, res: Response, next: NextFunction) => {
@@ -25,7 +24,6 @@ const hasUniqueEmail = async (req: AuthRequest | Request, res: Response, next: N
 	}
 };
 
-router.put("/download", fileDownload)
 
 router.delete("/delete/:id", async (req, res, next) => {
 	try {
