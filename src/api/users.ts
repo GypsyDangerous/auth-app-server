@@ -64,3 +64,5 @@ router.patch(
 		}
 	}
 );
+
+export = router
