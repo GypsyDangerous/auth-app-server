@@ -11,19 +11,19 @@ router.post("/register", hasUniqueEmail, async (req, res, next) => {
 	let { email } = req.body;
 	try {
 		if (!password || password.length < passwordMin || password.length > passwordMax) {
-			res.json({
+			return res.status(400).json({
 				success: false,
-				code: 403,
+				code: 400,
 				message: "Error: password is invalid or missing",
 			});
 		}
 		if (!email || email.length < emailMin) {
-			res.json({ success: false, code: 403, message: "Error: email is invalid or missing" });
+			return res.status(400).json({ success: false, code: 400, message: "Error: email is invalid or missing" });
 		}
 		if (!username || username.length < usernameMin || username.length > usernameMax) {
-			res.json({
+			return res.status(400).json({
 				success: false,
-				code: 403,
+				code: 400,
 				message: "Error: username is invalid or missing",
 			});
 		}
@@ -48,7 +48,7 @@ router.post("/register", hasUniqueEmail, async (req, res, next) => {
 			userId: newUser.id,
 		});
 	} catch (err) {
-		res.status(400).json({ success: false, code: 400, message: "Error: " + err.message });
+		res.status(500).json({ success: false, code: 500, message: "Error: " + err.message });
 	}
 });
 
@@ -60,14 +60,14 @@ router.post("/login", async (req, res, next) => {
 		// error checking on validity of user inputs,
 		// this is to prevent invalid data from getting into the database from users who have tampered with the frontend
 		if (!password || password.length < passwordMin || password.length > passwordMax) {
-			res.json({
+			return res.status(400).json({
 				success: false,
-				code: 403,
+				code: 400,
 				message: "Error: password is invalid or missing",
 			});
 		}
 		if (!email || email.length < emailMin) {
-			res.json({ success: false, code: 403, message: "Error: email is invalid or missing" });
+			return res.status(400).json({ success: false, code: 400, message: "Error: email is invalid or missing" });
 		}
 
 		// email should not be case sensitive
@@ -78,7 +78,7 @@ router.post("/login", async (req, res, next) => {
 		if (!user) {
 			return res
 				.status(400)
-				.json({ success: false, code: 402, message: "No user with that email" });
+				.json({ success: false, code: 400, message: "No user with that email" });
 		}
 
 		// check if the password hash in the database matches the password that was sent in, if not return an error
@@ -99,11 +99,11 @@ router.post("/login", async (req, res, next) => {
 			});
 		} else {
 			return res
-				.status(400)
-				.json({ success: false, code: 403, message: "Invalid Email or Password" });
+				.status(401)
+				.json({ success: false, code: 401, message: "Invalid Email or Password" });
 		}
 	} catch (err) {
-		res.status(400).json({ success: false, code: 400, message: "Error: " + err.message });
+		res.status(500).json({ success: false, code: 500, message: "Error: " + err.message });
 	}
 });
 
