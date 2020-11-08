@@ -1,4 +1,5 @@
 import {Request, Response,  NextFunction} from "express"
+import User from "../models/User.model"
 
 export function notFound(req: Request, res: Response, next: NextFunction): void {
 	res.status(404);
@@ -17,3 +18,20 @@ export function errorHandler(err: Error, req: Request, res: Response): void {
 	});
 }
 
+export const hasUniqueEmail = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+	try {
+		let email = req.body.email;
+		if (!email) {
+			return next();
+		}
+		email = email.toLowerCase();
+		const user = await User.findOne({ email });
+		if (!user) {
+			return next();
+		} else {
+			res.json({ code: 402, message: "A user with that email already exists" });
+		}
+	} catch (err) {
+		res.status(400).json({ success: false, code: 400, message: "Error: " + err.message });
+	}
+};
