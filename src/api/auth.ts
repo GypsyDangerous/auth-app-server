@@ -6,7 +6,7 @@ import { hasUniqueEmail } from "../middleware";
 import { passwordMin, passwordMax, usernameMin, usernameMax, emailMin } from "../utils/constants";
 const router = Router();
 
-router.route("/register").post(hasUniqueEmail, async (req, res, next) => {
+router.post("/register", hasUniqueEmail, async (req, res, next) => {
 	const { username, password } = req.body;
 	let { email } = req.body;
 	try {
@@ -52,7 +52,7 @@ router.route("/register").post(hasUniqueEmail, async (req, res, next) => {
 	}
 });
 
-router.route("/login").post(async (req, res, next) => {
+router.post("/login", async (req, res, next) => {
 	try {
 		const { password } = req.body;
 		let { email } = req.body;
