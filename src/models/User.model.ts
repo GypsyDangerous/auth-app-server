@@ -42,7 +42,8 @@ const UserSchema = new Schema(
 		},
 		photo: {
 			type: String,
-			required: true,
+			required: false,
+			default: "/avatar.png"
 		},
 	},
 	{
@@ -58,6 +59,6 @@ UserSchema.methods.validPassword = function (password: string) {
 	return bcrypt.compareSync(password, this.password);
 };
 
-const User = mongoose.model<User>("poll", UserSchema);
+const User = mongoose.model<User>("user", UserSchema);
 
 export = User;

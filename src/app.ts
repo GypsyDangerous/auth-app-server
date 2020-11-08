@@ -34,6 +34,8 @@ app.use(
 	})
 );
 
+app.use("/uploads/images", express.static("uploads/images"))
+
 app.get("/", (req, res) => {
 	res.json({
 		message: "🦄🌈✨👋🌎🌍🌏✨🌈🦄",
