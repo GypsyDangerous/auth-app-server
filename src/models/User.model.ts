@@ -1,13 +1,16 @@
 import mongoose, { Schema } from "mongoose";
-
-interface User extends mongoose.Document{
-	bio: string,
-	phone: string,
-	username: string,
-	email: string,
-	password: string,
-	isDeleted?: boolean,
-	photo: string
+import bcrypt from "bcrypt";
+import {saltRounds} from "../utils/constants"
+interface User extends mongoose.Document {
+	bio: string;
+	phone: string;
+	username: string;
+	email: string;
+	password: string;
+	isDeleted?: boolean;
+	photo: string;
+	generateHash: (password: string) => string;
+	validPassword: (password: string) => boolean
 }
 
 const UserSchema = new Schema(
@@ -29,7 +32,7 @@ const UserSchema = new Schema(
 		},
 		password: {
 			type: String,
-			required: true,
+			required: false,
 			trim: true,
 			minlength: 8,
 		},
@@ -46,6 +49,14 @@ const UserSchema = new Schema(
 		timestamps: true,
 	}
 );
+
+UserSchema.methods.generateHash = function (password: string) {
+	return bcrypt.hashSync(password, bcrypt.genSaltSync(saltRounds));
+};
+
+UserSchema.methods.validPassword = function (password: string) {
+	return bcrypt.compareSync(password, this.password);
+};
 
 const User = mongoose.model<User>("poll", UserSchema);
 
