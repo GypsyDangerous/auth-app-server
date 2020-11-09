@@ -5,7 +5,7 @@ import User from "../models/User.model";
 import { hasUniqueEmail } from "../middleware";
 import { passwordMin, passwordMax, usernameMin, usernameMax, emailMin } from "../utils/constants";
 const router = Router();
-
+ 
 router.post("/register", hasUniqueEmail, async (req, res, next) => {
 	const { username, password } = req.body;
 	let { email } = req.body;
