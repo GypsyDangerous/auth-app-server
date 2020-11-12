@@ -6,10 +6,19 @@ export const typeDefs = gql`
 		phone: String,
 		username: String!,
 		email: String!,
-		photo: String	
+		photo: String,
+		id: ID!	
+	}
+	type AuthResult {
+		user: User,
+		token: String!
 	}
 	type Query {
 		users: [User]
-		user: User
+		user(id: ID!): User
+	}
+	type Mutation {
+		login (email: String!, password: String!): AuthResult
+		register (username: String!, email: String!, password: String!): AuthResult 
 	}
 `;
