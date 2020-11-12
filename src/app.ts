@@ -7,6 +7,8 @@ import path from "path";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 dotenv.config();
+import { ApolloServer } from "apollo-server-express";
+import { typeDefs, resolvers } from "./graphql";
 
 // const middlewares = require("./middlewares");
 import { notFound, errorHandler } from "./middleware";
@@ -27,6 +29,8 @@ connection.once("open", () => {
 	console.log("MongoDB database connection successful");
 });
 
+const server = new ApolloServer({ typeDefs, resolvers });
+
 app.use(
 	rateLimit({
 		windowMs: 15 * 60 * 1000, // 15 minutes
@@ -34,7 +38,9 @@ app.use(
 	})
 );
 
-app.use("/uploads/images", express.static("uploads/images"))
+server.applyMiddleware({ app });
+
+app.use("/uploads/images", express.static("uploads/images"));
 
 app.get("/", (req, res) => {
 	res.json({
