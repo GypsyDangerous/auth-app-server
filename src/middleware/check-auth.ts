@@ -1,21 +1,14 @@
-import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
-import { payload } from "../types/Auth";
+import { NextFunction, Response } from "express";
+import { checkAuth } from "../utils/functions";
+
 import { AuthRequest } from "../types/Request";
 
-module.exports = (req: AuthRequest, res: Response, next: NextFunction) => {
+module.exports = async (req: AuthRequest, res: Response, next: NextFunction) => {
 	try {
 		const token = req.get("Authorization");
-		if (!token) {
-			throw new Error("");
-		}
-		const secret = process.env.PRIVATE_KEY || "";
-		const payload: payload | string = jwt.verify(token, secret);
-		if (typeof payload === "string") {
-			throw new Error();
-		} else {
-			req.userData = { userId: payload.userId };
-		}
+		const payload = await checkAuth(token);
+		if (!payload) throw new Error();
+		req.userData = payload;
 		next();
 	} catch (err) {
 		return res.json({ success: false, code: 401, message: "Authorization failed" });
