@@ -130,8 +130,8 @@ export const register = async (
 };
 
 export const updateUser = async (
-	id: string,
-	{ username, email, password, photo, bio, phone }: UserModification
+	id?: string,
+	{ username, email, password, photo, bio, phone }: UserModification = {}
 ): Promise<{ message: string; code: number }> => {
 	const user = await User.findById(id);
 	if (!user) {

@@ -1,6 +1,7 @@
 import User from "../models/User.model";
 import { DocumentQuery } from "mongoose";
-import { checkUniqueEmail, login, register } from "../utils/functions";
+import { checkUniqueEmail, login, register, checkAuth, updateUser } from "../utils/functions";
+import { UserModification } from "../types/User";
 
 export const resolvers = {
 	Query: {
@@ -32,6 +33,17 @@ export const resolvers = {
 				throw new Error(`Error ${loginResult.code}: ${loginResult.message}`);
 			const user = User.findById(loginResult.userId);
 			return { user, token: loginResult.token };
+		},
+		update: async (
+			parent: any,
+			{ Authorization: token, username, email, password, photo, bio, phone }: UserModification
+		): DocumentQuery<User | null, User, unknown> => {
+			const authResult = await checkAuth(token);
+			if (!authResult) throw new Error("Unauthorized");
+			const id = authResult.userId;
+			const result = await updateUser(id, { username, email, password, photo, bio, phone });
+			if (result.code !== 200) throw new Error(result.message);
+			return User.findById(id);
 		},
 	},
 };
