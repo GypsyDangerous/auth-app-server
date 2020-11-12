@@ -2,7 +2,16 @@ import uid from "uid";
 import User from "../models/User.model";
 import { loginResult, payload } from "../types/Auth";
 import jwt from "jsonwebtoken";
-import { passwordMin, passwordMax, usernameMin, usernameMax, emailMin } from "./constants";
+import { UserModification } from "../types/User";
+import {
+	passwordMin,
+	passwordMax,
+	usernameMin,
+	usernameMax,
+	emailMin,
+	saltRounds,
+} from "./constants";
+import bcrypt from "bcrypt";
 
 export const get_image_filename = (ext: string): string => `photo-${uid(12)}-${uid(12)}.${ext}`;
 
@@ -118,4 +127,37 @@ export const register = async (
 		token: token,
 		userId: newUser.id,
 	};
+};
+
+export const updateUser = async (
+	id: string,
+	{ username, email, password, photo, bio, phone }: UserModification
+): Promise<{ message: string; code: number }> => {
+	const user = await User.findById(id);
+	if (!user) {
+		return { code: 400, message: "Invalid user id" };
+	}
+	if (username) {
+		user.username = username;
+	}
+	if (email) {
+		user.email = email;
+	}
+	if (phone) {
+		user.phone = phone;
+	}
+	if (photo) {
+		user.photo = photo;
+	}
+	if (bio) {
+		user.bio = bio;
+	}
+	if (password) {
+		const samePassword = await bcrypt.compare(password, user.password);
+		if (!samePassword) {
+			user.password = await bcrypt.hash(password, saltRounds);
+		}
+	}
+	await user.save();
+	return { code: 200, message: "User update successfully" };
 };
