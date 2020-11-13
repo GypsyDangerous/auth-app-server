@@ -25,7 +25,8 @@ export const checkUniqueEmail = async (email: string): Promise<boolean> => {
 		return true;
 	}
 	email = email.toLowerCase();
-	return !!(await User.findOne({ email }));
+	const user = (await User.findOne({ email }));
+	return !!user
 };
 
 export const checkAuth = async (token?: string): Promise<payload | null> => {

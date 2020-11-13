@@ -25,7 +25,7 @@ export const hasUniqueEmail = async (
 ): Promise<void> => {
 	try {
 		const uniqueEmail = await checkUniqueEmail(req.body.email);
-		if (uniqueEmail) {
+		if (!uniqueEmail) {
 			return next();
 		}
 		res.status(400).json({ code: 400, message: "A user with that email already exists" });
