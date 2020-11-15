@@ -36,12 +36,19 @@ export const resolvers = {
 		},
 		update: async (
 			parent: any,
-			{ Authorization: token, username, email, password, photo, bio, phone }: UserModification
+			{ username, email, password, photo, bio, phone }: UserModification,
+			context: { id: string }
 		): DocumentQuery<User | null, User, unknown> => {
-			const authResult = await checkAuth(token);
-			if (!authResult) throw new Error("Unauthorized");
-			const id = authResult.userId;
-			const result = await updateUser(id, { username, email, password, photo, bio, phone });
+			const { id } = context;
+			if (!id) throw new Error("Unauthorized");
+			const result = await updateUser(id, {
+				username,
+				email,
+				password,
+				photo,
+				bio,
+				phone,
+			});
 			if (result.code !== 200) throw new Error(result.message);
 			return User.findById(id);
 		},

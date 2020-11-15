@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 dotenv.config();
 import { ApolloServer } from "apollo-server-express";
-import { typeDefs, resolvers } from "./graphql";
+import { typeDefs, resolvers, context } from "./graphql";
 
 // const middlewares = require("./middlewares");
 import { notFound, errorHandler } from "./middleware";
@@ -29,7 +29,7 @@ connection.once("open", () => {
 	console.log("MongoDB database connection successful");
 });
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({ typeDefs, resolvers, context });
 
 // app.use(
 // 	rateLimit({
