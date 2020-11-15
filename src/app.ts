@@ -31,12 +31,12 @@ connection.once("open", () => {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-app.use(
-	rateLimit({
-		windowMs: 15 * 60 * 1000, // 15 minutes
-		max: 15,
-	})
-);
+// app.use(
+// 	rateLimit({
+// 		windowMs: 15 * 60 * 1000, // 15 minutes
+// 		max: 15,
+// 	})
+// );
 
 server.applyMiddleware({ app });
 
