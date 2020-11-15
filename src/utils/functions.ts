@@ -15,18 +15,18 @@ import bcrypt from "bcrypt";
 
 export const get_image_filename = (ext: string): string => `photo-${uid(12)}-${uid(12)}.${ext}`;
 
-// export const validateEmail = (email: string): boolean => {
-// 	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-// 	return re.test(email);
-// };
+export const validateEmail = (email: string): boolean => {
+	const re = /^\S+@\S+\.\S+$/;
+	return re.test(email);
+};
 
 export const checkUniqueEmail = async (email: string): Promise<boolean> => {
 	if (!email) {
 		return true;
 	}
 	email = email.toLowerCase();
-	const user = (await User.findOne({ email }));
-	return !!user
+	const user = await User.findOne({ email });
+	return !!user;
 };
 
 export const checkAuth = async (token?: string): Promise<payload | null> => {
